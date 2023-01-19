@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["orderByNulls"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model will be associated with Supabase auth.users
+model User {
+  id         String    @id
+  role       Role      @default(User)
+  email      String    @unique
+  name       String?
+  location   Location? @relation(fields: [locationId], references: [id])
+  locationId String?
+
+  // Relations
+  createdCustomBlends  CustomBlend[] @relation("blendCreatedBy")
+  approvedCustomBlends CustomBlend[] @relation("blendApprovedBy")
+  updatedCustomBlends  CustomBlend[] @relation("blendUpdatedBy")
+  createdPromos        Promo[]       @relation("promoCreatedBy")
+  updatedPromos        Promo[]       @relation("promoUpdatedBy")
+
+  @@map("users")
+}
+
+enum Role {
+  User
+  Store
+  Manager
+  Admin
+}
+
+model Location {
+  id      String  @id @default(cuid())
+  name    String  @unique
+  address String?
+  phone   String? @db.VarChar(10)
+  users   User[]
+
+  @@map("locations")
+}
+
+model Promo {
+  id         String   @id @default(cuid())
+  title      String
+  subtitle   String?
+  sale       String?
+  notes      String?
+  validFrom  DateTime
+  validUntil DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  blendId     String?      @unique
+  blend       CustomBlend? @relation(fields: [blendId], references: [id])
+  createdById String
+  createdBy   User?        @relation("promoCreatedBy", fields: [createdById], references: [id])
+  updatedById String?
+  updatedBy   User?        @relation("promoUpdatedBy", fields: [updatedById], references: [id])
+
+  @@map("promos")
+}
+
+model CustomBlend {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  flavor1   String
+  shots1    Int
+  flavor2   String?
+  shots2    Int?
+  flavor3   String?
+  shots3    Int?
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  promo        Promo?
+  createdById  String
+  createdBy    User?   @relation("blendCreatedBy", fields: [createdById], references: [id])
+  approvedById String?
+  approvedBy   User?   @relation("blendApprovedBy", fields: [approvedById], references: [id])
+  updatedById  String?
+  updatedBy    User?   @relation("blendUpdatedBy", fields: [updatedById], references: [id])
+
+  @@unique([flavor1, shots1, flavor2, shots2, flavor3, shots3])
+  @@map("custom_blends")
+}
+
+model Flavor {
+  id       String         @id @default(cuid())
+  flavor   String         @unique
+  category FlavorCategory
+
+  @@map("flavors")
+}
+
+enum FlavorCategory {
+  Fruit
+  Candy
+  Dessert
+  Tobacco
+  Menthol
+  Drinks
+  Other
+}
+
+model NicotinePacket {
+  id    String  @id @default(cuid())
+  level Int     @unique
+  color String  @unique
+  salt  Boolean
+
+  @@map("nicotine_packets")
+}
