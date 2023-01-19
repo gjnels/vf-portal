@@ -2,8 +2,11 @@
 	import '../tailwind.css'
 	import { Toaster } from 'svelte-french-toast'
 	import { Logo, MenuLinkGroup } from '$lib/components'
-	import { Icon, Menu } from 'svelte-hero-icons'
+	import { ChevronDown, Icon, Menu } from 'svelte-hero-icons'
 	import { links } from '$lib/links'
+	import type { LayoutData } from './$types'
+
+	export let data: LayoutData
 
 	let navigationOpen = false
 	const toggleNavigation = () => {
@@ -41,6 +44,46 @@
 				>
 					<Logo />
 				</a>
+			</div>
+
+			<div class="navbar-end">
+				{#if data.user}
+					<div class="dropdown-hover dropdown-end dropdown">
+						<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+						<!-- svelte-ignore a11y-label-has-associated-control -->
+						<label
+							tabindex="0"
+							class="btn-ghost btn-sm btn flex-nowrap gap-1 normal-case tracking-wide"
+						>
+							<span>{data.user?.name ?? data.user.email}</span>
+							<Icon
+								src={ChevronDown}
+								size="1.5em"
+							/>
+						</label>
+						<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+						<ul
+							tabindex="0"
+							class="dropdown-content menu rounded-box min-w-[10rem] bg-base-300 p-2 shadow"
+						>
+							<li>
+								<form
+									action="/logout"
+									method="post"
+								>
+									<button type="submit"> Logout </button>
+								</form>
+							</li>
+						</ul>
+					</div>
+				{:else}
+					<a
+						href="/login"
+						class="btn-outline btn-accent btn-sm btn mr-2"
+					>
+						Login
+					</a>
+				{/if}
 			</div>
 		</nav>
 
