@@ -5,8 +5,23 @@
 	import { ChevronDown, Icon, Menu } from 'svelte-hero-icons'
 	import { links } from '$lib/links'
 	import type { LayoutData } from './$types'
+	import { onMount } from 'svelte'
+	import { sb } from '$lib/supabase'
+	import { invalidate } from '$app/navigation'
 
 	export let data: LayoutData
+
+	onMount(() => {
+		const {
+			data: { subscription: authListener }
+		} = sb.auth.onAuthStateChange(() => {
+			invalidate('supabase:auth')
+		})
+
+		return () => {
+			authListener.unsubscribe()
+		}
+	})
 
 	let navigationOpen = false
 	const toggleNavigation = () => {
@@ -50,8 +65,8 @@
 				{#if data.user}
 					<div class="dropdown-hover dropdown-end dropdown">
 						<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-						<!-- svelte-ignore a11y-label-has-associated-control -->
 						<label
+							for=""
 							tabindex="0"
 							class="btn-ghost btn-sm btn flex-nowrap gap-1 normal-case tracking-wide"
 						>
