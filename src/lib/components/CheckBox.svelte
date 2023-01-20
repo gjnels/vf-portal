@@ -7,6 +7,11 @@
 		inputClass?: string
 		containerClass?: string
 		checked?: boolean
+		onChange?: (
+			e: Event & {
+				currentTarget: EventTarget & HTMLInputElement
+			}
+		) => void
 	}
 
 	export let id: string
@@ -15,6 +20,13 @@
 	export let inputClass = ''
 	export let containerClass = ''
 	export let checked = false
+	export let onChange:
+		| ((
+				e: Event & {
+					currentTarget: EventTarget & HTMLInputElement
+				}
+		  ) => void)
+		| undefined = undefined
 </script>
 
 <div class="form-control {containerClass}">
@@ -28,6 +40,7 @@
 			name={id}
 			type="checkbox"
 			bind:checked
+			on:change={onChange}
 			{...$$restProps}
 		/>
 		<span class="label-text">{label}</span>
