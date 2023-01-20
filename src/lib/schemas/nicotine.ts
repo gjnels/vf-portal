@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+// Use for validating nicotine calculator for calculating packets to get to a desired level
 export const totalPacketsSchema = z
 	.object({
 		bottleSize: z.coerce
@@ -7,7 +8,7 @@ export const totalPacketsSchema = z
 			.min(1, 'Select a bottle size'),
 		initial: z.coerce
 			.number({ required_error: 'Enter the current nicotine level' })
-			.min(0, 'Nicotine levels cannot be less than 0'),
+			.min(0, 'Initial nicotine level cannot be less than 0'),
 		final: z.coerce
 			.number({ required_error: 'Enter the nicotine level to get to' })
 			.gt(0, 'Final nicotine level must be greater than 0'),
@@ -26,17 +27,18 @@ export const totalPacketsSchema = z
 
 export type PacketFormData = Omit<z.infer<typeof totalPacketsSchema>, 'packets'>
 
-export const levelSchema = z.object({
+// Used for validating nicotine calculator for calculating total nicotine level depending on selected packets to add
+export const totalNicotineSchema = z.object({
 	bottleSize: z.coerce
 		.number({ required_error: 'Select a bottle size' })
 		.min(1, 'Select a bottle size'),
 	initial: z.coerce
 		.number({ required_error: 'Enter the current nicotine level' })
-		.min(0, 'Nicotine levels cannot be less than 0'),
+		.min(0, 'Initial nicotine level cannot be less than 0'),
 	packets: z.string().min(1, 'Choose at least one packet')
 })
 
-export const totalNicotineSchema = z.array(
+export const packetsSchema = z.array(
 	z
 		.object({
 			color: z.string(),
