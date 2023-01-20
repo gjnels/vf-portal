@@ -39,3 +39,12 @@ export const requireUser = async (
 
 	return { user, session, sb: supabaseClient, sbServiceRole: supabaseServerClient }
 }
+
+// Get the role of the currently logged in user if there is one
+export const getRole = async (event: RequestEvent) => {
+	const { session } = await getSupabase(event)
+	const user = session
+		? await prisma.user.findUnique({ where: { id: session.user.id }, select: { role: true } })
+		: null
+	return user?.role
+}
