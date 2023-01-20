@@ -3,10 +3,14 @@ import type { CustomBlend, Flavor } from '@prisma/client'
 export const categoriesFromFlavors = (flavors: Flavor[]) =>
 	Array.from(new Set(flavors.map((flavor) => flavor.category)))
 
-type BlendFlavors = Pick<
+export type BlendFlavors = Pick<
 	CustomBlend,
 	'flavor1' | 'flavor2' | 'flavor3' | 'shots1' | 'shots2' | 'shots3'
 >
+
+export type CopyBlend = BlendFlavors & { name?: string; nicotine: number; bottleCount: number }
+
+export type SavedBlend = CopyBlend & { id: string }
 
 const blendFlavorsToArray = (data: BlendFlavors) => {
 	const blend = [{ flavor: data.flavor1, shots: data.shots1 }]
@@ -19,9 +23,7 @@ const blendFlavorsToArray = (data: BlendFlavors) => {
 	return blend
 }
 
-export const createBlendString = (
-	mix: BlendFlavors & { name?: string; nicotine: number; bottleCount: number }
-) => {
+export const createBlendString = (mix: CopyBlend) => {
 	return mix
 		? `${mix.bottleCount} x ${mix.nicotine}mg ${
 				mix.name ? `${mix.name} ` : ''
@@ -31,10 +33,8 @@ export const createBlendString = (
 		: ''
 }
 
-export const createDisplayBlendString = (blend: CustomBlend) => {
-	const flavors = blendFlavorsToArray(blend)
-
-	return flavors
-		.map(({ flavor, shots }) => `${flavors.length === 3 ? '' : `${shots} `}${flavor}`)
+export const createDisplayBlendString = (blend: BlendFlavors) => {
+	return blendFlavorsToArray(blend)
+		.map(({ flavor, shots }) => `${shots} ${flavor}`)
 		.join(' - ')
 }
