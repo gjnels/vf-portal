@@ -3,7 +3,7 @@
 	interface $$Props extends HTMLInputAttributes {
 		id: string
 		label?: string
-		error?: string | false
+		error?: string
 		inputClass?: string
 		containerClass?: string
 		value?: string | number | boolean
@@ -11,7 +11,7 @@
 
 	export let id: string
 	export let label = ''
-	export let error: string | false | undefined = undefined
+	export let error: string | undefined = undefined
 	export let inputClass = ''
 	export let containerClass = ''
 	export let value: string | number | boolean = ''
