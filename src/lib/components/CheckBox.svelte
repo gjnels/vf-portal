@@ -29,10 +29,10 @@
 		| undefined = undefined
 </script>
 
-<div class="form-control {containerClass}">
+<div class="form-control w-fit {containerClass}">
 	<label
 		for={id}
-		class="label"
+		class="label gap-2"
 	>
 		<input
 			class="checkbox {inputClass} {error ? 'checkbox-error' : ''}"
