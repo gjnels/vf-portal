@@ -142,3 +142,16 @@ export const namedBlendSchema = z
 		approved: z.coerce.boolean({ required_error: 'Approve or disapprove the blend' }).default(false)
 	})
 	.and(flavorSchema)
+
+export const flavorPickerSchema = z
+	.object({
+		id: z.string().optional(),
+		bottleCount: z.coerce
+			.number({ required_error: 'Enter number of bottles' })
+			.int()
+			.min(1, 'Must be at least 1'),
+		nicotine: z.coerce
+			.number({ required_error: 'Enter nicotine level' })
+			.min(0, 'Must be greater than or equal to 0')
+	})
+	.and(flavorSchema)
