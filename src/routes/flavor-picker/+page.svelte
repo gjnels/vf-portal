@@ -2,7 +2,7 @@
 	import type { ActionData, PageData } from './$types'
 	import { applyAction, enhance, type SubmitFunction } from '$app/forms'
 	import { Input, PageTitle, RadioGroup, Select } from '$lib/components'
-	import { copyToClipboard } from '$lib/utils/clipboard'
+	import { toastPromise } from '$lib/utils/toast'
 	import { createBlendString, categoriesFromFlavors, type SavedBlend } from '$lib/utils/flavors'
 	import { blends } from '$lib/stores/blends'
 	import { Icon, Pencil, Trash } from 'svelte-hero-icons'
@@ -68,15 +68,24 @@
 		.filter(({ flavor }) => flavor !== flavor1 && flavor !== flavor2)
 		.map((f) => ({ value: f.flavor, label: f.flavor, group: f.category }))
 
+	let editBlendId = ''
+	let copyString = ''
+	let loading = false
+
 	const copyBlend = (blend: SavedBlend) => {
-		copyToClipboard(createBlendString(blend), {
-			loading: 'Copying blend...',
-			success: 'Blend copied to clipboard',
-			error: 'Error copying to clipboard'
+		const text = createBlendString(blend)
+		toastPromise(navigator.clipboard.writeText(text), {
+			loading: 'Copying to clipboard...',
+			success: () => {
+				copyString = ''
+				return 'Blend copied to clipboard'
+			},
+			error: () => {
+				copyString = text
+				return 'Error copying to clipboard'
+			}
 		})
 	}
-
-	let editBlendId = ''
 
 	const setEditBlend = (blend: SavedBlend) => {
 		editBlendId = blend.id
@@ -103,6 +112,7 @@
 	}
 
 	const submitForm: SubmitFunction = async () => {
+		loading = true
 		return async ({ result }) => {
 			await applyAction(result)
 
@@ -129,6 +139,13 @@
 	title="Flavor Picker"
 	subtitle="Create custom blend flavors for customer transactions"
 />
+
+{#if copyString}
+	<p class="mb-6 flex w-fit flex-col gap-2">
+		<span class="text-error">Could not copy to your Clipboard. Copy manually:</span>
+		<span class="rounded-box border-2 border-info p-4 text-lg">{copyString}</span>
+	</p>
+{/if}
 
 <div class="grid gap-10 lg:grid-cols-2">
 	<form
@@ -254,7 +271,7 @@
 			<div class="btn-group mt-4 w-full">
 				<button
 					type="submit"
-					class="btn-primary btn grow">Update</button
+					class="btn btn-primary grow">Update</button
 				>
 				<button
 					type="button"
@@ -265,7 +282,7 @@
 		{:else}
 			<button
 				type="submit"
-				class="btn-primary btn mt-4">Create</button
+				class="btn btn-primary mt-4">Create</button
 			>
 		{/if}
 	</form>
@@ -294,7 +311,7 @@
 						</p>
 						<div class="ml-auto shrink-0 space-x-2">
 							<button
-								class="btn-primary btn btn-square btn-sm"
+								class="btn btn-primary btn-square btn-sm"
 								on:click={() => setEditBlend(blend)}
 							>
 								<Icon
