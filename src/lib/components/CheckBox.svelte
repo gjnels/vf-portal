@@ -32,7 +32,7 @@
 <div class="form-control w-fit {containerClass}">
 	<label
 		for={id}
-		class="label gap-2"
+		class="label cursor-pointer gap-2"
 	>
 		<input
 			class="checkbox {inputClass} {error ? 'checkbox-error' : ''}"
