@@ -2,7 +2,7 @@
 	import type { HTMLInputAttributes } from 'svelte/elements'
 	interface $$Props extends HTMLInputAttributes {
 		id: string
-		label: string
+		label?: string
 		error?: string
 		inputClass?: string
 		containerClass?: string
@@ -15,7 +15,7 @@
 	}
 
 	export let id: string
-	export let label: string
+	export let label = ''
 	export let error: string | undefined = undefined
 	export let inputClass = ''
 	export let containerClass = ''
@@ -43,7 +43,9 @@
 			on:change={onChange}
 			{...$$restProps}
 		/>
-		<span class="label-text">{label}</span>
+		{#if label}
+			<span class="label-text">{label}</span>
+		{/if}
 	</label>
 	{#if error}
 		<label
