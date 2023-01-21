@@ -17,8 +17,6 @@
 			message = 'This page does not exist'
 			break
 	}
-
-	console.log($page.error)
 </script>
 
 <div class="flex flex-col items-center gap-6">
@@ -33,6 +31,6 @@
 	<p>{message}</p>
 	<a
 		href="/"
-		class="btn-primary btn">Go to Dashboard</a
+		class="btn btn-primary">Go to Dashboard</a
 	>
 </div>
