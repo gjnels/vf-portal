@@ -1,26 +1,28 @@
 <script lang="ts">
 	import { enhance, type SubmitFunction } from '$app/forms'
 	import { CheckBox, Input, RadioGroup, Select } from '$lib/components'
-	import type { NamedBlendErrors } from '$lib/schemas/flavors'
-	import { categoriesFromFlavors } from '$lib/utils/flavors'
+	import type { FlavorPickerBlendErrors, NamedBlendErrors } from '$lib/schemas/flavors'
+	import { categoriesFromFlavors, type SavedBlend } from '$lib/utils/flavors'
 	import type { CustomBlend, Flavor, Role } from '@prisma/client'
-	import { ArrowSmLeft, Icon } from 'svelte-hero-icons'
+	import type { ActionResult } from '@sveltejs/kit'
 
 	export let flavors: Flavor[]
 	const categories = categoriesFromFlavors(flavors)
-	export let userRole: Role | null
+	export let userRole: Role | null = null
 	export let formAction: string
-	export let errors: (NamedBlendErrors & { prisma?: string[] }) | undefined = undefined
-	export let blend: CustomBlend | undefined = undefined
+	export let errors:
+		| (NamedBlendErrors & { prisma?: string[] })
+		| FlavorPickerBlendErrors
+		| undefined = undefined
+	export let namedBlend = true
+	export let blend: CustomBlend | SavedBlend | null = null
+	export let afterSubmit: ((result: ActionResult) => Promise<void>) | undefined = undefined
+	export let onCancel: () => void = () => {}
 
-	let loading = false
-	const handleSubmit: SubmitFunction = () => {
-		loading = true
-		return async ({ update }) => {
-			await update()
-			loading = false
-		}
-	}
+	const isNamedBlend = (blend: CustomBlend | SavedBlend | null): blend is CustomBlend => namedBlend
+	const isNamedBlendErrors = (
+		errors: (NamedBlendErrors & { prisma?: string[] }) | FlavorPickerBlendErrors | undefined
+	): errors is NamedBlendErrors => namedBlend
 
 	let shotOptions = {
 		SINGLE: [{ value: 1, label: 'Single Shot' }],
@@ -73,18 +75,16 @@
 	$: flavor3Options = flavors
 		.filter(({ flavor }) => flavor !== flavor1 && flavor !== flavor2)
 		.map((f) => ({ value: f.flavor, label: f.flavor, group: f.category }))
-</script>
 
-<a
-	href="/custom-blends"
-	class="link mb-6 flex gap-1"
->
-	<Icon
-		src={ArrowSmLeft}
-		size="1.5em"
-	/>
-	Back to Custom Blends
-</a>
+	let loading = false
+	const handleSubmit: SubmitFunction = async () => {
+		loading = true
+		return async ({ result, update }) => {
+			afterSubmit ? await afterSubmit(result) : await update()
+			loading = false
+		}
+	}
+</script>
 
 <slot name="blend-details" />
 
@@ -102,14 +102,16 @@
 		/>
 	{/if}
 
-	<Input
-		id="name"
-		name="name"
-		label="Blend Name"
-		error={errors?.name?.[0]}
-		value={blend?.name}
-		disabled={loading}
-	/>
+	{#if isNamedBlend(blend)}
+		<Input
+			id="name"
+			name="name"
+			label="Blend Name"
+			error={isNamedBlendErrors(errors) ? errors?.name?.[0] : ''}
+			value={blend?.name}
+			disabled={loading}
+		/>
+	{/if}
 
 	<div class="form-control">
 		<label
@@ -205,24 +207,73 @@
 		/>
 	{/if}
 
-	{#if userRole === 'Admin'}
+	{#if userRole === 'Admin' && isNamedBlend(blend)}
 		<CheckBox
 			id="approved"
 			name="approved"
 			label="Approved"
 			checked={blend?.approved ?? true}
-			error={errors?.approved?.[0]}
+			error={isNamedBlendErrors(errors) ? errors?.approved?.[0] : ''}
 			disabled={loading}
 		/>
 	{/if}
 
-	{#if errors?.prisma?.[0]}
+	{#if !isNamedBlend(blend)}
+		<div class="flex gap-3">
+			<Input
+				id="nicotine"
+				label="Nicotine Level"
+				type="number"
+				min="0"
+				step="0.1"
+				disabled={loading}
+				value={blend?.nicotine}
+				error={!isNamedBlendErrors(errors) ? errors?.nicotine?.[0] : ''}
+				containerClass="grow"
+			/>
+			<Input
+				id="bottleCount"
+				label="Bottle Count"
+				type="number"
+				min="0"
+				step="0.1"
+				disabled={loading}
+				value={blend?.bottleCount ?? 1}
+				error={!isNamedBlendErrors(errors) ? errors?.bottleCount?.[0] : ''}
+				containerClass="grow"
+			/>
+		</div>
+	{/if}
+
+	{#if isNamedBlendErrors(errors) && errors?.prisma?.[0]}
 		<span class="text-sm text-error">{errors.prisma[0]}</span>
 	{/if}
 
-	<button
-		type="submit"
-		class="btn-primary btn mt-4"
-		disabled={loading}>Create</button
-	>
+	{#if isNamedBlend(blend) || !blend}
+		<button
+			type="submit"
+			class="btn btn-primary mt-4"
+			disabled={loading}
+		>
+			{blend ? 'Update' : 'Create'}
+		</button>
+	{:else}
+		<div class="btn-group mt-4 w-full">
+			<button
+				type="submit"
+				class="btn btn-primary grow"
+				disabled={loading}
+			>
+				Update
+			</button>
+			<button
+				type="button"
+				class="btn btn-secondary grow"
+				disabled={loading}
+				on:click={onCancel}
+			>
+				Cancel
+			</button>
+		</div>
+	{/if}
 </form>

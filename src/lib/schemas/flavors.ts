@@ -159,3 +159,8 @@ export const flavorPickerSchema = z
 			.min(0, 'Must be greater than or equal to 0')
 	})
 	.and(flavorSchema)
+
+export type FlavorPickerBlend = z.infer<typeof flavorPickerSchema>
+export type FlavorPickerBlendErrors = z.inferFlattenedErrors<
+	typeof flavorPickerSchema
+>['fieldErrors']
