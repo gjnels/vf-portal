@@ -138,10 +138,14 @@ export type Flavors = Omit<z.infer<typeof flavorSchema>, 'flavorCount'>
 
 export const namedBlendSchema = z
 	.object({
+		id: z.string().optional(),
 		name: z.string({ required_error: 'Enter a blend name' }).min(1, 'Enter a blend name'),
 		approved: z.coerce.boolean({ required_error: 'Approve or disapprove the blend' }).default(false)
 	})
 	.and(flavorSchema)
+
+export type NamedBlend = z.infer<typeof namedBlendSchema>
+export type NamedBlendErrors = z.inferFlattenedErrors<typeof namedBlendSchema>['fieldErrors']
 
 export const flavorPickerSchema = z
 	.object({
