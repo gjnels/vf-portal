@@ -3,7 +3,7 @@
 	import { CheckBox, Input, RadioGroup, Select } from '$lib/components'
 	import type { NamedBlendErrors } from '$lib/schemas/flavors'
 	import { categoriesFromFlavors } from '$lib/utils/flavors'
-	import type { Flavor, Role } from '@prisma/client'
+	import type { CustomBlend, Flavor, Role } from '@prisma/client'
 	import { ArrowSmLeft, Icon } from 'svelte-hero-icons'
 
 	export let flavors: Flavor[]
@@ -11,7 +11,7 @@
 	export let userRole: Role | null
 	export let formAction: string
 	export let errors: (NamedBlendErrors & { prisma?: string[] }) | undefined = undefined
-	export let blendId = ''
+	export let blend: CustomBlend | undefined = undefined
 
 	let loading = false
 	const handleSubmit: SubmitFunction = () => {
@@ -35,15 +35,15 @@
 		]
 	}
 
-	let flavorCount = 1
+	let flavorCount = blend?.flavor3 ? 3 : blend?.flavor2 ? 2 : 1
 
-	let flavor1 = ''
-	let shots1 = 1
+	let flavor1 = blend?.flavor1 || ''
+	let shots1 = blend?.shots1 || 1
 
-	let flavor2 = ''
-	let shots2 = 1
+	let flavor2 = blend?.flavor2 || ''
+	let shots2 = blend?.shots2 || 1
 
-	let flavor3 = ''
+	let flavor3 = blend?.flavor3 || ''
 	let shots3 = 1
 
 	$: if (flavorCount === 1) {
@@ -86,17 +86,19 @@
 	Back to Custom Blends
 </a>
 
+<slot name="blend-details" />
+
 <form
 	action={formAction}
 	method="post"
 	class="flex w-full max-w-lg grow flex-col gap-3"
 	use:enhance={handleSubmit}
 >
-	{#if blendId}
+	{#if blend}
 		<input
 			name="id"
 			hidden
-			value={blendId}
+			value={blend.id}
 		/>
 	{/if}
 
@@ -105,6 +107,7 @@
 		name="name"
 		label="Blend Name"
 		error={errors?.name?.[0]}
+		value={blend?.name}
 		disabled={loading}
 	/>
 
@@ -113,7 +116,7 @@
 			for=""
 			class="label"
 		>
-			<span class="label-text">Flavor Count</span>
+			<span class="label-text -mb-2">Flavor Count</span>
 		</label>
 		<RadioGroup
 			name="flavorCount"
@@ -146,8 +149,8 @@
 		bind:value={flavor1}
 		error={errors?.flavor1?.[0]}
 		disabled={loading}
+		containerClasses="-mb-2"
 	/>
-
 	<RadioGroup
 		name="shots1"
 		bind:group={shots1}
@@ -170,6 +173,7 @@
 			bind:value={flavor2}
 			error={errors?.flavor2?.[0]}
 			disabled={loading}
+			containerClasses="-mb-2"
 		/>
 		<RadioGroup
 			name="shots2"
@@ -190,6 +194,7 @@
 			bind:value={flavor3}
 			error={errors?.flavor3?.[0]}
 			disabled={loading}
+			containerClasses="-mb-2"
 		/>
 		<RadioGroup
 			name="shots3"
@@ -205,7 +210,7 @@
 			id="approved"
 			name="approved"
 			label="Approved"
-			checked={true}
+			checked={blend?.approved ?? true}
 			error={errors?.approved?.[0]}
 			disabled={loading}
 		/>
@@ -217,7 +222,7 @@
 
 	<button
 		type="submit"
-		class="btn btn-primary mt-4"
+		class="btn-primary btn mt-4"
 		disabled={loading}>Create</button
 	>
 </form>
