@@ -80,7 +80,7 @@ export const actions = {
 		const { data } = await validateFormData(event.request, z.object({ id: z.string() }))
 
 		try {
-			// await prisma.customBlend.delete({ where: { id: data.id } })
+			await prisma.customBlend.delete({ where: { id: data.id } })
 			console.log('success')
 		} catch (err) {
 			console.log(err)
