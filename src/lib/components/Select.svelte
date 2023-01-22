@@ -8,7 +8,6 @@
 		options: { label: string; value: string | number; group?: string }[]
 		additionalClasses?: string
 		containerClasses?: string
-		placeholder?: string
 	}
 
 	export let id: string
@@ -19,7 +18,7 @@
 	export let additionalClasses = ''
 	export let containerClasses = ''
 	export let value = ''
-	export let placeholder = 'Select an option'
+	export let placeholder: string | null = 'Select an option'
 </script>
 
 <div class="form-control {containerClasses}">
@@ -38,7 +37,10 @@
 		bind:value
 		{...$$restProps}
 	>
-		<option value="">{placeholder}</option>
+		{#if placeholder}
+			<option value="">{placeholder}</option>
+		{/if}
+
 		{#if groups && groups.length > 0}
 			{#each groups as group (group)}
 				<optgroup label={group}>

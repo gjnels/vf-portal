@@ -22,7 +22,7 @@ export const requireUser = async (
 
 	const user = await prisma.user.findUnique({
 		where: { id: session.user.id },
-		select: { role: true, location: { select: { name: true } } }
+		include: { location: true }
 	})
 
 	// It's possible there is an active session in cookies, but the user has been removed from the database
@@ -36,6 +36,12 @@ export const requireUser = async (
 	if (options?.roles && !options.roles.includes(user.role)) {
 		throw redirect(303, options.redirectTo ?? '/')
 	}
+
+	// Populate locals for access to these when a route is protected by server hook
+	event.locals.sb = supabaseClient
+	event.locals.sbServiceRole = supabaseServerClient
+	event.locals.session = session
+	event.locals.user = user
 
 	return { user, session, sb: supabaseClient, sbServiceRole: supabaseServerClient }
 }
