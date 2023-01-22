@@ -49,7 +49,7 @@
 				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 				<label
 					for="navigation"
-					class="btn-ghost btn-square btn-sm btn"
+					class="btn-ghost btn btn-square btn-sm"
 				>
 					<Icon src={Menu} />
 				</label>
@@ -68,7 +68,7 @@
 						<label
 							for=""
 							tabindex="0"
-							class="btn-ghost btn-sm btn flex-nowrap gap-1 normal-case tracking-wide"
+							class="btn-ghost btn btn-sm flex-nowrap gap-1 normal-case tracking-wide"
 						>
 							<span>{data.user?.name ?? data.user.email}</span>
 							<Icon
@@ -82,11 +82,14 @@
 							class="dropdown-content menu rounded-box min-w-[10rem] bg-base-300 p-2 shadow"
 						>
 							<li>
+								<a href="/account">My Profile</a>
+							</li>
+							<li>
 								<form
 									action="/logout"
 									method="post"
 								>
-									<button type="submit"> Logout </button>
+									<button type="submit">Logout</button>
 								</form>
 							</li>
 						</ul>
@@ -94,7 +97,7 @@
 				{:else}
 					<a
 						href="/login"
-						class="btn-outline btn-accent btn-sm btn mr-2"
+						class="btn-outline btn btn-accent btn-sm mr-2"
 					>
 						Login
 					</a>
