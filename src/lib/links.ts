@@ -28,3 +28,9 @@ export const links: Links = [
 		icon: Calculator
 	}
 ]
+
+export const storeLinks: Links = []
+
+export const managerLinks: Links = []
+
+export const adminLinks: Links = []

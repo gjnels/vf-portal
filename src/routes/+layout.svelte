@@ -3,11 +3,12 @@
 	import { Toaster } from 'svelte-french-toast'
 	import { Logo, MenuLinkGroup } from '$lib/components'
 	import { ChevronDown, Icon, Menu } from 'svelte-hero-icons'
-	import { links } from '$lib/links'
+	import { adminLinks, links, managerLinks, storeLinks } from '$lib/links'
 	import type { LayoutData } from './$types'
 	import { onMount } from 'svelte'
 	import { sb } from '$lib/supabase'
 	import { invalidate } from '$app/navigation'
+	import { Admin, Manager, Store } from '$lib/roles'
 
 	export let data: LayoutData
 
@@ -125,6 +126,29 @@
 				onclick={toggleNavigation}
 				first
 			/>
+
+			{#if data.user}
+				<MenuLinkGroup
+					links={storeLinks}
+					access={Store}
+					role={data.user.role}
+					onclick={toggleNavigation}
+				/>
+
+				<MenuLinkGroup
+					links={managerLinks}
+					access={Manager}
+					role={data.user.role}
+					onclick={toggleNavigation}
+				/>
+
+				<MenuLinkGroup
+					links={adminLinks}
+					access={Admin}
+					role={data.user.role}
+					onclick={toggleNavigation}
+				/>
+			{/if}
 		</ul>
 	</div>
 </div>
