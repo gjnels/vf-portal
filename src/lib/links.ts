@@ -1,4 +1,4 @@
-import { Beaker, Calculator, ColorSwatch, type IconSource } from 'svelte-hero-icons'
+import { Beaker, Calculator, ColorSwatch, ViewBoards, type IconSource } from 'svelte-hero-icons'
 
 export type Link = {
 	href: string
@@ -33,4 +33,10 @@ export const storeLinks: Links = []
 
 export const managerLinks: Links = []
 
-export const adminLinks: Links = []
+export const adminLinks: Links = [
+	{
+		href: '/admin',
+		label: 'Admin Dashboard',
+		icon: ViewBoards
+	}
+]
