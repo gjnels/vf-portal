@@ -1,13 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 import { PUBLIC_SUPABASE_URL } from '$env/static/public'
-import { SERVICE_ROLE_KEY } from '$env/static/private'
+import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private'
 import { redirect, type RequestEvent } from '@sveltejs/kit'
 import { getSupabase } from '@supabase/auth-helpers-sveltekit'
 import { prisma } from './prisma'
 import type { Role } from '@prisma/client'
 import type { Database } from '$lib/types/database.types'
 
-export const supabaseServerClient = createClient<Database>(PUBLIC_SUPABASE_URL, SERVICE_ROLE_KEY)
+export const supabaseServerClient = createClient<Database>(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 export const requireUser = async (
 	event: RequestEvent,
