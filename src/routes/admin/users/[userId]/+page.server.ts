@@ -1,14 +1,10 @@
-import { Admin } from '$lib/roles'
 import { updateUserSchema } from '$lib/schemas/users'
 import { prisma } from '$lib/server/prisma'
-import { requireUser } from '$lib/server/supabase'
 import { validateFormData } from '$lib/utils/forms'
 import { fail, redirect } from '@sveltejs/kit'
-import { ZodError } from 'zod'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load = (async (event) => {
-	await requireUser(event, { roles: Admin, redirectTo: '/' })
 	const userId = event.params.userId
 	const user = await prisma.user.findUnique({ where: { id: userId } })
 	if (!user) {
@@ -22,8 +18,6 @@ export const load = (async (event) => {
 
 export const actions = {
 	updateUser: async (event) => {
-		await requireUser(event, { roles: Admin, redirectTo: '/' })
-
 		const { data, errors } = await validateFormData(event.request, updateUserSchema)
 
 		if (errors) {

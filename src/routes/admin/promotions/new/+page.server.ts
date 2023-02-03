@@ -1,6 +1,5 @@
 import { promoSchema } from '$lib/schemas/promos'
 import { prisma } from '$lib/server/prisma'
-import { requireUser } from '$lib/server/supabase'
 import { error, fail, redirect } from '@sveltejs/kit'
 import { ZodError } from 'zod'
 import type { Actions, PageServerLoad } from './$types'
@@ -13,7 +12,7 @@ export const load = (async (event) => {
 
 export const actions = {
 	editPromo: async (event) => {
-		const { user } = await requireUser(event)
+		const user = event.locals.user
 
 		const formData = Object.fromEntries(await event.request.formData())
 

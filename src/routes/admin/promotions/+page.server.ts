@@ -1,6 +1,4 @@
-import { Admin } from '$lib/roles'
 import { prisma } from '$lib/server/prisma'
-import { requireUser } from '$lib/server/supabase'
 import type { PageServerLoad } from './$types'
 
 export const load = (async (event) => {
