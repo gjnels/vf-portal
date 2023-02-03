@@ -26,6 +26,7 @@ model User {
   updatedCustomBlends  CustomBlend[] @relation("blendUpdatedBy")
   createdPromos        Promo[]       @relation("promoCreatedBy")
   updatedPromos        Promo[]       @relation("promoUpdatedBy")
+  addedMissingSkus     MissingSku[]
 
   @@map("users")
 }
@@ -120,4 +121,16 @@ model NicotinePacket {
   salt  Boolean
 
   @@map("nicotine_packets")
+}
+
+model MissingSku {
+  id        String    @id @default(cuid())
+  sku       String    @unique
+  item      String
+  added     Boolean   @default(false)
+  addedBy   User?     @relation(fields: [addedById], references: [id])
+  addedById String?
+  addedAt   DateTime?
+
+  @@map("missing_skus")
 }
