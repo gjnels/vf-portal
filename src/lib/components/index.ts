@@ -6,6 +6,7 @@ import Input from './Input.svelte'
 import Select from './Select.svelte'
 import RadioGroup from './RadioGroup.svelte'
 import CheckBox from './CheckBox.svelte'
+import TextArea from './TextArea.svelte'
 import CustomBlendForm from './CustomBlendForm.svelte'
 
 export {
@@ -17,5 +18,6 @@ export {
 	Select,
 	RadioGroup,
 	CheckBox,
+	TextArea,
 	CustomBlendForm
 }
