@@ -1,17 +1,23 @@
-import { Beaker, Calculator, ColorSwatch, ViewBoards, type IconSource } from 'svelte-hero-icons'
+import {
+	Beaker,
+	Calculator,
+	Calendar,
+	ClipboardList,
+	ColorSwatch,
+	UserGroup,
+	ViewBoards,
+	type IconSource
+} from 'svelte-hero-icons'
 
 export type Link = {
 	href: string
+	activeHref?: string
 	label: string
 	icon: IconSource
 	children?: undefined
 }
 
-export type LinkWithChildren = { href: string; children: Link[] }
-
-export type Links = Array<Link | LinkWithChildren>
-
-export const links: Links = [
+export const links: Link[] = [
 	{
 		href: '/flavor-picker',
 		label: 'Flavor Picker',
@@ -24,19 +30,37 @@ export const links: Links = [
 	},
 	{
 		href: '/nicotine',
+		activeHref: '/nicotine',
 		label: 'Nicotine Calculator',
 		icon: Calculator
 	}
 ]
 
-export const storeLinks: Links = []
+export const storeLinks: Link[] = []
 
-export const managerLinks: Links = []
+export const managerLinks: Link[] = []
 
-export const adminLinks: Links = [
+export const adminLinks: Link[] = [
 	{
 		href: '/admin',
 		label: 'Admin Dashboard',
 		icon: ViewBoards
+	},
+	{
+		href: '/admin/promotions',
+		activeHref: '/admin/promotions',
+		label: 'Promotions',
+		icon: Calendar
+	},
+	{
+		href: '/admin/users',
+		activeHref: '/admin/users',
+		label: 'Users',
+		icon: UserGroup
+	},
+	{
+		href: '/admin/missing-skus',
+		label: 'Missing SKUs',
+		icon: ClipboardList
 	}
 ]

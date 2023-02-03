@@ -9,7 +9,9 @@
 	export let showActive = true
 	export let onclick: (() => void) | undefined = undefined
 
-	$: active = $page.url.pathname.includes(activeHref ?? href)
+	$: active =
+		(activeHref && $page.url.pathname.startsWith(activeHref)) ||
+		$page.url.pathname.split('?')[0].endsWith(href)
 </script>
 
 <li
