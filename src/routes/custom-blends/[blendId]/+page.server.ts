@@ -33,8 +33,8 @@ export const load = (async (event) => {
 
 export const actions = {
 	updateBlend: async (event) => {
-		const { session } = await requireUser(event, { roles: Admin, redirectTo: '/custom-blends' })
-		const userId = session.user.id
+		const { user } = await requireUser(event, { roles: Admin, redirectTo: '/custom-blends' })
+		const userId = user.id
 
 		const { data, errors } = await validateFormData(event.request, namedBlendSchema)
 
