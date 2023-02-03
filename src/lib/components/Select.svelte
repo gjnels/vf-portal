@@ -8,6 +8,7 @@
 		options: { label: string; value: string | number; group?: string }[]
 		additionalClasses?: string
 		containerClasses?: string
+		placeholder?: string
 	}
 
 	export let id: string
@@ -18,7 +19,7 @@
 	export let additionalClasses = ''
 	export let containerClasses = ''
 	export let value = ''
-	export let placeholder: string | null = 'Select an option'
+	export let placeholder = ''
 </script>
 
 <div class="form-control {containerClasses}">
