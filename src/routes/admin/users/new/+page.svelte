@@ -29,7 +29,6 @@
 		id="email"
 		label="Email address"
 		type="email"
-		value={form?.data?.email ?? ''}
 		error={form?.errors?.email?.[0]}
 	/>
 

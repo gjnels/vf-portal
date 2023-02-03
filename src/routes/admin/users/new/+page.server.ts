@@ -25,13 +25,9 @@ export const actions = {
 				})
 			}
 
-			console.log('inviting user')
-
 			const res = await supabaseServerClient.auth.admin.inviteUserByEmail(email, {
 				redirectTo: event.url.origin + '/account/security'
 			})
-
-			console.log(res)
 
 			if (res.error) {
 				return fail(400, {
@@ -49,7 +45,7 @@ export const actions = {
 			if (err instanceof ZodError) {
 				const { fieldErrors: errors } = err.flatten()
 				return fail(400, {
-					errors,
+					errors
 				})
 			}
 
