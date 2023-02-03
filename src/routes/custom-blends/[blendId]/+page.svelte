@@ -30,20 +30,41 @@
 	<p>
 		Created: <span class="text-success">{formatPromoDate(blend.createdAt)}</span>
 		{#if blend.createdBy}
-			by <span class="text-info">{blend.createdBy.name ?? blend.createdBy.email}</span>
+			by {#if blend.createdBy.id === data.user.id}
+				<span class="text-info">You</span>
+			{:else}
+				<a
+					href="/admin/users/{blend.createdBy.id}"
+					class="link link-info link-hover">{blend.createdBy.name ?? blend.createdBy.email}</a
+				>
+			{/if}
 		{/if}
 	</p>
 
 	<p>
 		Updated: <span class="text-success">{formatPromoDate(blend.updatedAt)}</span>
 		{#if blend.updatedBy}
-			by <span class="text-info">{blend.updatedBy.name ?? blend.updatedBy.email}</span>
+			by {#if blend.updatedBy.id === data.user.id}
+				<span class="text-info">You</span>
+			{:else}
+				<a
+					href="/admin/users/{blend.updatedBy.id}"
+					class="link link-info link-hover">{blend.updatedBy.name ?? blend.updatedBy.email}</a
+				>
+			{/if}
 		{/if}
 	</p>
 
 	{#if blend.approved && blend.approvedBy}
 		<p>
-			Approved by: <span class="text-info">{blend.approvedBy.name ?? blend.approvedBy.email}</span>
+			Approved by: {#if blend.approvedBy.id === data.user.id}
+				<span class="text-info">You</span>
+			{:else}
+				<a
+					href="/admin/users/{blend.approvedBy.id}"
+					class="link link-info link-hover">{blend.approvedBy.name ?? blend.approvedBy.email}</a
+				>
+			{/if}
 		</p>
 	{/if}
 
