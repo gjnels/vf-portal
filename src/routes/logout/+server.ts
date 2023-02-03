@@ -3,14 +3,9 @@ import { error, redirect } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 
 export const POST = (async (event) => {
-	const { session, supabaseClient } = await getSupabase(event)
+	const { supabaseClient } = await getSupabase(event)
 
-	if (session) {
-		const { error: err } = await supabaseClient.auth.signOut()
-		if (err) {
-			throw error(500, 'Logout failed')
-		}
-	}
+	await supabaseClient.auth.signOut()
 
 	throw redirect(303, '/')
 }) satisfies RequestHandler
