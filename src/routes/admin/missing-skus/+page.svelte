@@ -21,6 +21,7 @@
 			<li class="flex gap-4 items-center">
 				<form
 					method="post"
+					action="?/update"
 					use:enhance={async () => {
 						return async ({ update }) => {
 							await update({ reset: false })
@@ -83,7 +84,7 @@
 					<button
 						type="submit"
 						formaction="?/delete"
-						class="btn btn-sm btn-error">Remove</button
+						class="btn btn-sm btn-warning btn-outline">Remove</button
 					>
 				</form>
 				<p>{sku.sku}</p>

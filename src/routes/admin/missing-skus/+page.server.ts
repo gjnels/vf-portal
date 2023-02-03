@@ -21,7 +21,25 @@ export const actions = {
 			return fail(400)
 		}
 
-		await prisma.missingSku.update({ where: { id: data.id }, data: { added: data.added } })
+		if (data.added) {
+			await prisma.missingSku.update({
+				where: { id: data.id },
+				data: {
+					added: true,
+					addedBy: { connect: { id: event.locals.user.id } },
+					addedAt: new Date()
+				}
+			})
+		} else {
+			await prisma.missingSku.update({
+				where: { id: data.id },
+				data: {
+					added: false,
+					addedBy: { disconnect: true },
+					addedAt: null
+				}
+			})
+		}
 	},
 
 	delete: async (event) => {
