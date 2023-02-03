@@ -10,7 +10,12 @@
 <div class="grid gap-10 md:grid-cols-2 xl:grid-cols-3">
 	<div class="card-bordered card min-h-[20rem] bg-neutral shadow-md">
 		<div class="card-body">
-			<h2 class="card-title text-2xl">Promotions</h2>
+			<h2 class="card-title text-2xl">
+				<a
+					href="/admin/promotions"
+					class="link-hover">Promotions</a
+				>
+			</h2>
 			<div class="divider m-0" />
 			<p class="flex flex-col gap-1">
 				<span class="underline underline-offset-2">Current Promotions</span>
@@ -33,7 +38,12 @@
 
 	<div class="card-bordered card min-h-[20rem] bg-neutral shadow-md">
 		<div class="card-body">
-			<h2 class="card-title text-2xl">Users</h2>
+			<h2 class="card-title text-2xl">
+				<a
+					href="/admin/users"
+					class="link-hover">Users</a
+				>
+			</h2>
 			<div class="divider m-0" />
 			<p>Admins: {data.userCount.admin}</p>
 			<p>Managers: {data.userCount.manager}</p>
@@ -44,8 +54,14 @@
 
 	<div class="card-bordered card min-h-[20rem] bg-neutral shadow-md">
 		<div class="card-body">
-			<h2 class="card-title text-2xl">Missing SKUs</h2>
+			<h2 class="card-title text-2xl">
+				<a
+					href="/admin/missing-skus"
+					class="link-hover">Missing SKUs</a
+				>
+			</h2>
 			<div class="divider m-0" />
+			<p>Missing SKUs to be added: {data.missingSkus}</p>
 		</div>
 	</div>
 </div>

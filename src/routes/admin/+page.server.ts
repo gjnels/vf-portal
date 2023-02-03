@@ -41,6 +41,7 @@ export const load = (async () => {
 				validUntil: { lt: new Date() }
 			}
 		}),
-		userCount: getUserCounts()
+		userCount: getUserCounts(),
+		missingSkus: prisma.missingSku.count({ where: { added: false } })
 	}
 }) satisfies PageServerLoad
