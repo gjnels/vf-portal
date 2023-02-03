@@ -46,3 +46,8 @@ export const passwordSchema = z
 			})
 		}
 	})
+
+export const updateUserSchema = z.object({
+	role: z.nativeEnum(Role),
+	location: z.string().cuid().or(z.literal(''))
+})
