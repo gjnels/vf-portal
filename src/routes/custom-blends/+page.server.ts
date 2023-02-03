@@ -81,10 +81,7 @@ export const actions = {
 
 		try {
 			await prisma.customBlend.delete({ where: { id: data.id } })
-			console.log('success')
 		} catch (err) {
-			console.log(err)
-
 			if (err instanceof PrismaClientKnownRequestError) {
 				return fail(400, {
 					errors: { prisma: [err.message] } as { [x: string]: string[] },

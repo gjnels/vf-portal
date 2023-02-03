@@ -41,7 +41,6 @@ export const actions = {
 		const { user } = await requireUser(event)
 
 		const formData = Object.fromEntries(await event.request.formData())
-		console.log(formData)
 
 		try {
 			const data = promoSchema.parse(formData)
@@ -53,7 +52,6 @@ export const actions = {
 				}
 			})
 		} catch (err) {
-			console.log(err)
 			if (err instanceof ZodError) {
 				return fail(400, {
 					parseErrors: err.flatten().fieldErrors
@@ -75,9 +73,7 @@ export const actions = {
 	deletePromo: async ({ params }) => {
 		try {
 			await prisma.promo.delete({ where: { id: params.promoId } })
-			console.log('success')
 		} catch (err) {
-			console.log(error)
 			throw fail(400)
 		}
 

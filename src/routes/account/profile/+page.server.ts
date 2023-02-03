@@ -23,8 +23,6 @@ export const actions = {
 			}
 		}
 
-		console.log(data)
-
 		try {
 			await prisma.user.update({
 				where: {
@@ -42,7 +40,6 @@ export const actions = {
 				}
 			})
 		} catch (err) {
-			console.log(err)
 			return {
 				prismaError: 'Error updating profile',
 				data

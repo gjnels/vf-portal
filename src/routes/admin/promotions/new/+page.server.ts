@@ -27,7 +27,6 @@ export const actions = {
 				}
 			})
 		} catch (err) {
-			console.log(err)
 			if (err instanceof ZodError) {
 				return fail(400, {
 					parseErrors: err.flatten().fieldErrors

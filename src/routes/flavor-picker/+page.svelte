@@ -37,7 +37,6 @@
 	}
 
 	const resetForm = () => {
-		console.log('resetting form')
 		editBlend = null
 	}
 </script>

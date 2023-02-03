@@ -10,7 +10,6 @@ export const actions = {
 		const { data, errors } = await validateFormData(request, totalNicotineSchema)
 
 		if (errors) {
-			console.log(errors)
 			return fail(400, {
 				data,
 				errors: errors.fieldErrors

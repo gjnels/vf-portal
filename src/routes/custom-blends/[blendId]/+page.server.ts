@@ -72,7 +72,6 @@ export const actions = {
 				}
 			})
 		} catch (err) {
-			console.log(err)
 			return fail(400, {
 				data,
 				errors: {

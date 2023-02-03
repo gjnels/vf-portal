@@ -26,10 +26,7 @@ export const actions = {
 
 			// Sign out user to make them sign in with new password
 			await sb.auth.signOut()
-
-			console.log('success')
 		} catch (err) {
-			console.log(err)
 			return fail(500, { message: 'Failed to update password' })
 		}
 

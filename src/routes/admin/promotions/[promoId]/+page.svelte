@@ -142,7 +142,6 @@
 			action="?/deletePromo"
 			use:enhance={async () => {
 				return async ({ result, update }) => {
-					console.log(result)
 					if (result.type === 'success' || result.type === 'redirect') {
 						toast.success('Promotion deleted')
 					} else {

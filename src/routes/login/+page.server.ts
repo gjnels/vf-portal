@@ -37,8 +37,6 @@ export const actions: Actions = {
 		const { error: err } = await supabaseClient.auth.signInWithPassword(data)
 
 		if (err) {
-			console.log(err)
-
 			if (err instanceof AuthApiError && err.status === 400) {
 				return fail(400, {
 					data: { email: data.email },
