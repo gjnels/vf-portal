@@ -121,6 +121,14 @@
 			class="drawer-overlay"
 		/>
 		<ul class="menu w-80 gap-2 overflow-y-auto bg-base-100 p-4">
+			<a
+				href="/missing-sku"
+				class="btn btn-sm btn-primary shrink"
+				on:click={toggleNavigation}
+			>
+				Incorrect or Missing SKU?
+			</a>
+
 			<MenuLinkGroup
 				{links}
 				onclick={toggleNavigation}
