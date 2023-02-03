@@ -1,5 +1,6 @@
 import { promoSchema } from '$lib/schemas/promos'
 import { prisma } from '$lib/server/prisma'
+import { validateFormData } from '$lib/utils/forms'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import { error, fail, redirect } from '@sveltejs/kit'
 import { ZodError } from 'zod'
@@ -38,24 +39,25 @@ export const actions = {
 	editPromo: async (event) => {
 		const user = event.locals.user
 
-		const formData = Object.fromEntries(await event.request.formData())
+		const { data, errors } = await validateFormData(event.request, promoSchema)
+
+		if (errors) {
+			return fail(400, {
+				parseErrors: errors.fieldErrors
+			})
+		}
 
 		try {
-			const data = promoSchema.parse(formData)
+			const { blendId, ...rest } = data
 			await prisma.promo.update({
 				where: { id: event.params.promoId },
 				data: {
-					...data,
-					updatedById: user.id
+					...rest,
+					updatedBy: { connect: { id: user.id } },
+					blend: blendId ? { connect: { id: blendId } } : { disconnect: true }
 				}
 			})
 		} catch (err) {
-			if (err instanceof ZodError) {
-				return fail(400, {
-					parseErrors: err.flatten().fieldErrors
-				})
-			}
-
 			if (err instanceof PrismaClientKnownRequestError) {
 				return fail(400, {
 					dbError: err
