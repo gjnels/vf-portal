@@ -1,18 +1,26 @@
-import { Admin } from '$lib/roles'
 import { prisma } from '$lib/server/prisma'
-import { requireUser, supabaseServerClient } from '$lib/server/supabase'
+import { supabaseServerClient } from '$lib/server/supabase'
+import { validateFormData } from '$lib/utils/forms'
 import { error, fail, redirect } from '@sveltejs/kit'
-import { z, ZodError } from 'zod'
+import { z } from 'zod'
 import type { Actions } from './$types'
 
 export const actions = {
 	inviteUser: async (event) => {
-		await requireUser(event, { roles: Admin, redirectTo: '/' })
+		const { data, errors } = await validateFormData(
+			event.request,
+			z.object({ email: z.string().email() })
+		)
 
-		const formData = await event.request.formData()
+		if (errors) {
+			return fail(400, {
+				parseErrors: errors.fieldErrors
+			})
+		}
+
+		const { email } = data
 
 		try {
-			const { email } = z.object({ email: z.string().email() }).parse(formData)
 			const user = await prisma.user.findUnique({ where: { email } })
 			if (user) {
 				return fail(400, {
@@ -31,7 +39,7 @@ export const actions = {
 
 			if (res.error) {
 				return fail(400, {
-					sbError: { ...res.error }
+					dbError: res.error
 				})
 			}
 
@@ -42,13 +50,6 @@ export const actions = {
 				}
 			})
 		} catch (err) {
-			if (err instanceof ZodError) {
-				const { fieldErrors: errors } = err.flatten()
-				return fail(400, {
-					errors
-				})
-			}
-
 			throw error(500, 'Internal server error. Please try again')
 		}
 
