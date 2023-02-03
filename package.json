@@ -43,7 +43,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@prisma/client": "4.8.0",
 		"@supabase/auth-helpers-sveltekit": "^0.8.6",
 		"@supabase/supabase-js": "^2.2.2",
 		"cuid": "^2.1.8",
