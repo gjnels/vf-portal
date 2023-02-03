@@ -12,7 +12,7 @@
 
 <a
 	href="/admin/users/new"
-	class="btn-accent btn mb-6 w-fit">Invite New User</a
+	class="btn-accent btn mb-6 self-start btn-sm">Invite New User</a
 >
 
 {#if data.users.length > 0}
