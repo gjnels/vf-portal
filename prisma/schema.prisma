@@ -27,6 +27,7 @@ model User {
   createdPromos        Promo[]       @relation("promoCreatedBy")
   updatedPromos        Promo[]       @relation("promoUpdatedBy")
   addedMissingSkus     MissingSku[]
+  tasks                Task[]
 
   @@map("users")
 }
@@ -43,54 +44,57 @@ model Location {
   name    String  @unique
   address String?
   phone   String? @db.VarChar(10)
-  users   User[]
+
+  // Relations
+  users User[]
+  tasks Task[]
 
   @@map("locations")
 }
 
 model Promo {
-  id         String   @id @default(cuid())
-  title      String
-  subtitle   String?
-  sale       String?
-  notes      String?
-  validFrom  DateTime
-  validUntil DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          String   @id @default(cuid())
+  title       String
+  subtitle    String?
+  sale        String?
+  notes       String?
+  validFrom   DateTime
+  validUntil  DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  blendId     String?  @unique
+  createdById String
+  updatedById String?
 
   // Relations
-  blendId     String?      @unique
-  blend       CustomBlend? @relation(fields: [blendId], references: [id])
-  createdById String
-  createdBy   User?        @relation("promoCreatedBy", fields: [createdById], references: [id])
-  updatedById String?
-  updatedBy   User?        @relation("promoUpdatedBy", fields: [updatedById], references: [id])
+  blend     CustomBlend? @relation(fields: [blendId], references: [id])
+  createdBy User?        @relation("promoCreatedBy", fields: [createdById], references: [id])
+  updatedBy User?        @relation("promoUpdatedBy", fields: [updatedById], references: [id])
 
   @@map("promos")
 }
 
 model CustomBlend {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  flavor1   String
-  shots1    Int
-  flavor2   String?
-  shots2    Int?
-  flavor3   String?
-  shots3    Int?
-  approved  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String   @unique
+  flavor1      String
+  shots1       Int
+  flavor2      String?
+  shots2       Int?
+  flavor3      String?
+  shots3       Int?
+  approved     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdById  String
+  approvedById String?
+  updatedById  String?
 
   // Relations
-  promo        Promo?
-  createdById  String
-  createdBy    User?   @relation("blendCreatedBy", fields: [createdById], references: [id])
-  approvedById String?
-  approvedBy   User?   @relation("blendApprovedBy", fields: [approvedById], references: [id])
-  updatedById  String?
-  updatedBy    User?   @relation("blendUpdatedBy", fields: [updatedById], references: [id])
+  promo      Promo?
+  createdBy  User?  @relation("blendCreatedBy", fields: [createdById], references: [id])
+  approvedBy User?  @relation("blendApprovedBy", fields: [approvedById], references: [id])
+  updatedBy  User?  @relation("blendUpdatedBy", fields: [updatedById], references: [id])
 
   @@unique([flavor1, shots1, flavor2, shots2, flavor3, shots3])
   @@map("custom_blends")
@@ -128,9 +132,29 @@ model MissingSku {
   sku       String    @unique
   item      String
   added     Boolean   @default(false)
-  addedBy   User?     @relation(fields: [addedById], references: [id])
   addedById String?
   addedAt   DateTime?
 
+  // Relations
+  addedBy User? @relation(fields: [addedById], references: [id])
+
   @@map("missing_skus")
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  task        String
+  description String?
+  complete    Boolean   @default(false)
+  assignedAt  DateTime
+  dueAt       DateTime?
+  locationId  String?
+  userId      String?
+
+  // Relations
+  location Location? @relation(fields: [locationId], references: [id])
+  user     User?     @relation(fields: [userId], references: [id])
+
+  @@index([task])
+  @@map("tasks")
 }
